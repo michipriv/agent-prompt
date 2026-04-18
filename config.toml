@@ -1,0 +1,13 @@
+[paths]
+claude_dir = "C:\\Users\\mmade\\.claude"
+repo_dir   = "C:\\data\\agent-prompt"
+
+[[rules]]
+subdir      = "agents"
+dest_subdir = "agents"
+extension   = "md"
+
+[[rules]]
+subdir      = "rules"
+dest_subdir = "rules"
+extension   = "md"

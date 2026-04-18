@@ -1,0 +1,12 @@
+[package]
+name = "sync-claude"
+version = "1.0.0"
+edition = "2021"
+
+[[bin]]
+name = "sync-claude"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"

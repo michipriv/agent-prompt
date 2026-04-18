@@ -1,9 +1,14 @@
-# Nur agents/, rules/, CLAUDE.md und sync_claude.py versionieren
+# Versionierte Dateien explizit erlauben
 *
 !.gitignore
 !CLAUDE.md
-!sync_claude.py
+!Cargo.toml
+!Cargo.lock
+!config.toml
+!src/
+!src/main.rs
 !agents/
 !agents/*.md
 !rules/
 !rules/*.md
+steuerung/
