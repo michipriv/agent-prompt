@@ -1,0 +1,9 @@
+# Nur agents/, rules/, CLAUDE.md und sync_claude.py versionieren
+*
+!.gitignore
+!CLAUDE.md
+!sync_claude.py
+!agents/
+!agents/*.md
+!rules/
+!rules/*.md
