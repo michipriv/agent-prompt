@@ -1,4 +1,6 @@
 // Filename: src/main.rs
+// V 1.2 Backup vor Install; claude_dir auto per USERPROFILE
+// V 1.1 config.toml-Suche im CWD
 // V 1.0 Initial — sync/install zwischen .claude/ und Repo
 
 use std::env;
@@ -27,6 +29,15 @@ struct Rule {
     extension:   String,
 }
 
+/// Löst `claude_dir` auf — ersetzt %USERPROFILE% oder auto-erkennt den User.
+fn resolve_claude_dir(raw: &str) -> PathBuf {
+    let userprofile = env::var("USERPROFILE").unwrap_or_else(|_| {
+        let username = env::var("USERNAME").unwrap_or_else(|_| "Unknown".into());
+        format!("C:\\Users\\{}", username)
+    });
+    PathBuf::from(raw.replace("%USERPROFILE%", &userprofile))
+}
+
 /// Gibt true zurück wenn src neuer als dest ist oder dest nicht existiert.
 fn src_is_newer(src: &Path, dest: &Path) -> bool {
     if !dest.exists() {
@@ -40,11 +51,8 @@ fn src_is_newer(src: &Path, dest: &Path) -> bool {
     mtime(src) > mtime(dest)
 }
 
-/// Kopiert src → dest wenn src neuer. Gibt true zurück wenn kopiert wurde.
-fn copy_if_newer(src: &Path, dest: &Path) -> bool {
-    if !src_is_newer(src, dest) {
-        return false;
-    }
+/// Kopiert src → dest (immer, ohne mtime-Check). Gibt true bei Erfolg.
+fn copy_file(src: &Path, dest: &Path) -> bool {
     if let Some(parent) = dest.parent() {
         if let Err(e) = fs::create_dir_all(parent) {
             eprintln!("  Fehler Verzeichnis erstellen {}: {}", parent.display(), e);
@@ -58,6 +66,14 @@ fn copy_if_newer(src: &Path, dest: &Path) -> bool {
             false
         }
     }
+}
+
+/// Kopiert src → dest wenn src neuer. Gibt true zurück wenn kopiert wurde.
+fn copy_if_newer(src: &Path, dest: &Path) -> bool {
+    if !src_is_newer(src, dest) {
+        return false;
+    }
+    copy_file(src, dest)
 }
 
 /// Kopiert alle Dateien mit gegebener Extension aus src_dir nach dest_dir.
@@ -85,8 +101,54 @@ fn sync_dir(src_dir: &Path, dest_dir: &Path, ext: &str) -> usize {
     count
 }
 
+/// Erstellt Backup aller vorhandenen Zieldateien nach C:\tmp\backup\<timestamp>\.
+fn backup_existing(claude: &Path, config: &Config) -> PathBuf {
+    let ts = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0);
+    let backup_root = PathBuf::from(format!("C:\\tmp\\backup\\{}", ts));
+    let mut count = 0;
+
+    for rule in &config.rules {
+        let src_dir = claude.join(&rule.dest_subdir);
+        if !src_dir.exists() {
+            continue;
+        }
+        if let Ok(entries) = fs::read_dir(&src_dir) {
+            for entry in entries.flatten() {
+                let src = entry.path();
+                if src.extension().and_then(|e| e.to_str()) != Some(rule.extension.as_str()) {
+                    continue;
+                }
+                let rel = src.strip_prefix(claude).unwrap_or(&src);
+                let dest = backup_root.join(rel);
+                if copy_file(&src, &dest) {
+                    count += 1;
+                }
+            }
+        }
+    }
+
+    // CLAUDE.md sichern
+    let claude_md = claude.join("CLAUDE.md");
+    if claude_md.exists() {
+        let dest = backup_root.join("CLAUDE.md");
+        if copy_file(&claude_md, &dest) {
+            count += 1;
+        }
+    }
+
+    if count > 0 {
+        println!("Backup: {} Datei(en) → {}", count, backup_root.display());
+    } else {
+        println!("Backup: nichts vorhanden — kein Backup nötig");
+    }
+    backup_root
+}
+
 fn run_sync(config: &Config) {
-    let claude = PathBuf::from(&config.paths.claude_dir);
+    let claude = resolve_claude_dir(&config.paths.claude_dir);
     let repo   = PathBuf::from(&config.paths.repo_dir);
     let mut total = 0;
 
@@ -99,7 +161,6 @@ fn run_sync(config: &Config) {
         total += n;
     }
 
-    // CLAUDE.md immer synchronisieren
     let src  = claude.join("CLAUDE.md");
     let dest = repo.join("CLAUDE.md");
     if src.exists() {
@@ -116,8 +177,23 @@ fn run_sync(config: &Config) {
 }
 
 fn run_install(config: &Config) {
-    let claude = PathBuf::from(&config.paths.claude_dir);
+    let userprofile = env::var("USERPROFILE").unwrap_or_else(|_| {
+        let u = env::var("USERNAME").unwrap_or_else(|_| "Unknown".into());
+        format!("C:\\Users\\{}", u)
+    });
+    let username = PathBuf::from(&userprofile)
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "Unknown".into());
+
+    let claude = PathBuf::from(&userprofile).join(".claude");
     let repo   = PathBuf::from(&config.paths.repo_dir);
+
+    println!("Ziel-User: {} → {}", username, claude.display());
+
+    // Backup vorhandener Dateien
+    backup_existing(&claude, config);
+
     let mut total = 0;
 
     for rule in &config.rules {
@@ -129,20 +205,17 @@ fn run_install(config: &Config) {
         total += n;
     }
 
-    // CLAUDE.md immer installieren
     let src  = repo.join("CLAUDE.md");
     let dest = claude.join("CLAUDE.md");
     if src.exists() {
         println!("CLAUDE.md:");
-        if copy_if_newer(&src, &dest) {
+        if copy_file(&src, &dest) {
             println!("    + CLAUDE.md");
             total += 1;
-        } else {
-            println!("  bereits aktuell");
         }
     }
 
-    println!("\nInstall abgeschlossen: {} Datei(en) installiert", total);
+    println!("\nInstall abgeschlossen: {} Datei(en) für User '{}' installiert", total, username);
 }
 
 fn main() {
@@ -150,12 +223,12 @@ fn main() {
     if args.len() < 2 {
         eprintln!("Verwendung: sync-claude <sync|install>");
         eprintln!("  sync    — .claude/ → Repo (sammeln)");
-        eprintln!("  install — Repo → .claude/ (verteilen)");
+        eprintln!("  install — Repo → .claude/ (verteilen, mit Backup)");
         std::process::exit(1);
     }
 
     let config_path = {
-        let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+        let cwd = env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
         let cwd_config = cwd.join("config.toml");
         if cwd_config.exists() {
             cwd_config
@@ -166,6 +239,7 @@ fn main() {
                 .unwrap_or_else(|| PathBuf::from("config.toml"))
         }
     };
+
     let config_str = fs::read_to_string(&config_path)
         .unwrap_or_else(|e| panic!("config.toml nicht gefunden ({}): {}", config_path.display(), e));
 
