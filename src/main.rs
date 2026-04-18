@@ -154,12 +154,18 @@ fn main() {
         std::process::exit(1);
     }
 
-    let exe_dir = PathBuf::from(&args[0])
-        .parent()
-        .map(|p| p.to_path_buf())
-        .unwrap_or_else(|| PathBuf::from("."));
-
-    let config_path = exe_dir.join("config.toml");
+    let config_path = {
+        let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+        let cwd_config = cwd.join("config.toml");
+        if cwd_config.exists() {
+            cwd_config
+        } else {
+            PathBuf::from(&args[0])
+                .parent()
+                .map(|p| p.join("config.toml"))
+                .unwrap_or_else(|| PathBuf::from("config.toml"))
+        }
+    };
     let config_str = fs::read_to_string(&config_path)
         .unwrap_or_else(|e| panic!("config.toml nicht gefunden ({}): {}", config_path.display(), e));
 

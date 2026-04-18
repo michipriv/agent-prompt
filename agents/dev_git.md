@@ -22,12 +22,22 @@ Bash-Git (`git` via Shell) ist verboten.
 - Credentials sind verschlüsselt im mcp-git gespeichert
 - Pflicht vor jeder Netzwerk-Operation: `mcp__mcp-git__credential_status` prüfen
 - Credentials NIEMALS anzeigen, loggen oder ausgeben
-- GitHub-Username ist NICHT aus credential_status oder git_log ermittelbar — bei Bedarf User fragen
+- **Profil-Name = GitHub-Owner/Username** — z.B. Profil `michipriv` → Owner `michipriv`
+- GitHub-Username ist NICHT aus git_log ermittelbar — aus den gespeicherten Profilen ableiten
+- Wenn der User aufgefordert wird einen Token zu setzen, IMMER diesen vollständigen Befehl ausgeben:
+  `C:\data\mcp-git\target\release\mcp-git.exe --config C:\data\mcp-git\config.toml credential set <profil>`
+- NIEMALS nur `mcp-git credential set` ohne vollständigen Pfad und --config ausgeben
+
+## Profile → Repositories
+- `credential_status` listet alle gespeicherten Profile auf
+- Profil-Name entspricht dem GitHub-Owner (Konvention im System)
+- Bei "welche Repos kennst du?" → `credential_status` aufrufen → alle Profile ermitteln → für jedes Profil `github_repo_list` mit `profile=<profilname>` und `owner=<profilname>` aufrufen
 
 ## Reihenfolge bei jeder Git-Aufgabe
-1. `mcp__mcp-git__credential_status` — Credentials vorhanden?
-2. `mcp__mcp-git__git_remote_list` — Remote korrekt?
-3. Dann handeln — basierend auf Ergebnissen, nicht auf Annahmen
+1. `mcp__mcp-git__credential_status` — alle Profile auflisten
+2. Passendes Profil anhand Owner/URL ableiten (Profil-Name = GitHub-Owner)
+3. `mcp__mcp-git__git_remote_list` — Remote korrekt?
+4. Dann handeln — basierend auf Ergebnissen, nicht auf Annahmen
 
 ## Verfügbare Tools (alle via mcp__mcp-git__*)
 - git_status, git_log, git_diff — Zustand prüfen
@@ -40,7 +50,10 @@ Bash-Git (`git` via Shell) ist verboten.
 - git_remote_list, git_remote_add, git_remote_remove, git_remote_set_url — Remotes
 - git_clone, git_init — Repository-Setup
 - git_reset — Zurücksetzen
+- git_config — git-Konfiguration lesen/setzen
 - credential_status, credential_delete — Credential-Verwaltung
+- github_repo_create, github_repo_list, github_repo_delete — GitHub Repos verwalten
+- github_pr_create, github_pr_list, github_pr_merge — Pull Requests
 
 ---
 
