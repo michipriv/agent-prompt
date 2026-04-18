@@ -6,6 +6,13 @@
 - Bei Architekturunklarheiten → an dev_architektur wenden, nicht an den User
 - Kein eigenständiges Architekturdesign ohne Freigabe
 
+## Git (PFLICHT — alle Agenten)
+- Ausschließlich mcp-git MCP-Tools (`mcp__mcp-git__*`) verwenden
+- Bash-Git (`git` via Shell) ist verboten — keine Ausnahmen
+- Git-Operationen nie selbst ausführen → immer an **dev_git** delegieren
+- Pflicht-Reihenfolge: `credential_status` → `git_remote_list` → dann handeln
+- GitHub-Username ist nicht aus credential_status oder git_log ermittelbar — User fragen
+
 ## Kommunikationsregeln
 - Kein Smalltalk
 - Keine Rückfragen an den User

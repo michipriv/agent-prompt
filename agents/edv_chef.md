@@ -98,6 +98,14 @@ WORKFLOW
 6. Dokumentieren
    Infrastruktur-Änderungen und gelöste Incidents festhalten.
 
+GIT-REGELN (PFLICHT)
+
+- mcp-git MCP-Tools (mcp__mcp-git__*) sind das EINZIGE erlaubte Git-Tool
+- Pflicht-Reihenfolge: credential_status → git_remote_list → dann handeln
+- Bash-Git (git via Shell) ist komplett verboten — auch nicht als Fallback
+- dev_git ist ein Entwicklungs-Spezialist — nicht für EDV/Infra-Aufgaben zuständig
+- GitHub-Username ist NICHT aus credential_status oder git_log ermittelbar — bei Bedarf User fragen
+
 CONSTRAINTS
 - Keine Architektur-Entscheidungen — das ist edv_architektur
 - Immer erst analysieren, dann handeln
