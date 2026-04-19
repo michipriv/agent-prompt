@@ -1,5 +1,6 @@
 # deploy.yaml — Deployment-Konfiguration agent-prompt
 # Aufruf: /deploy
+# Voraussetzung: OpenVPN aktiv (Zugang zu 192.168.10.x)
 
 source:
   repo_path: "C:\\data\\agent-prompt"
@@ -9,8 +10,9 @@ source:
 
 target:
   host: 192.168.10.23
-  protocol: winrm
-  user: ""                          # TODO: Windows-Username auf Remote-PC eintragen
+  protocol: winrm          # WinRM muss auf Remote aktiv sein (Enable-PSRemoting)
+  vpn: openvpn             # Erreichbar nur über OpenVPN
+  user: ""                 # TODO: Windows-Username auf Remote-PC eintragen
   repo_path: "C:\\data\\agent-prompt"  # TODO: Zielpfad auf Remote-PC prüfen
   git_profile: michipriv
 
