@@ -5,6 +5,7 @@
 !Cargo.toml
 !Cargo.lock
 !config.toml
+!deploy.yaml
 !src/
 !src/main.rs
 !agents/

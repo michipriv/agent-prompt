@@ -1,0 +1,30 @@
+# deploy.yaml — Deployment-Konfiguration agent-prompt
+# Aufruf: /deploy
+
+source:
+  repo_path: "C:\\data\\agent-prompt"
+  git_profile: michipriv
+  git_remote: origin
+  branch: master
+
+target:
+  host: 192.168.10.23
+  protocol: winrm
+  user: ""                          # TODO: Windows-Username auf Remote-PC eintragen
+  repo_path: "C:\\data\\agent-prompt"  # TODO: Zielpfad auf Remote-PC prüfen
+  git_profile: michipriv
+
+steps:
+  - name: push
+    action: git_push
+    repo_path: "{{ source.repo_path }}"
+    profile: "{{ source.git_profile }}"
+
+  - name: remote_pull
+    action: winrm_invoke
+    host: "{{ target.host }}"
+    user: "{{ target.user }}"
+    commands:
+      - 'if (!(Test-Path "{{ target.repo_path }}")) { & "C:\\Users\\{{ target.user }}\\.cargo\\bin\\cargo.exe" 2>$null; git clone https://github.com/michipriv/agent-prompt.git "{{ target.repo_path }}" }'
+      - 'cd "{{ target.repo_path }}" && git pull origin master'
+      - '"{{ target.repo_path }}\\target\\release\\sync-claude.exe" install'
