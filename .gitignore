@@ -7,6 +7,9 @@
 !config.toml
 !deploy.yaml
 !README.md
+!bin/
+!bin/sync-claude
+!bin/sync-claude.exe
 !src/
 !src/main.rs
 !agents/

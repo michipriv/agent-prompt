@@ -1,57 +1,31 @@
-# sync-claude — Claude Agenten installieren
+# Claude Agenten installieren
 
 ## Windows 11
 
-**1. Rust installieren**
-PowerShell als Administrator:
+1. Repo herunterladen: [ZIP Download](https://github.com/michipriv/agent-prompt/archive/refs/heads/master.zip)
+2. ZIP entpacken
+3. PowerShell im entpackten Ordner öffnen:
 ```powershell
-winget install Rustlang.Rustup
-```
-Danach PowerShell neu starten.
-
-**2. Repo klonen & kompilieren**
-```powershell
-git clone https://github.com/michipriv/agent-prompt C:\data\agent-prompt
-cd C:\data\agent-prompt
-cargo build --release
+.\bin\sync-claude.exe install
 ```
 
-**3. Agenten installieren**
-```powershell
-.\target\release\sync-claude.exe install
-```
-Agenten landen in `%USERPROFILE%\.claude\agents\`.
-Backup vorher automatisch in `%TEMP%\sync-claude-backup\`.
+Agenten werden nach `%USERPROFILE%\.claude\agents\` installiert.
 
 ---
 
 ## Linux (Debian / Ubuntu)
 
-**1. Rust installieren**
+1. Repo herunterladen:
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source ~/.cargo/env
+wget https://github.com/michipriv/agent-prompt/archive/refs/heads/master.zip
+unzip master.zip
+cd agent-prompt-master
 ```
 
-**2. Repo klonen & kompilieren**
+2. Binary ausführbar machen und installieren:
 ```bash
-git clone https://github.com/michipriv/agent-prompt /data/agent-prompt
-cd /data/agent-prompt
-cargo build --release
+chmod +x bin/sync-claude
+./bin/sync-claude install
 ```
 
-**3. Agenten installieren**
-```bash
-./target/release/sync-claude install
-```
-Agenten landen in `~/.claude/agents/`.
-Backup vorher automatisch in `/tmp/sync-claude-backup/`.
-
----
-
-## Befehle
-
-| Befehl | Funktion |
-|--------|----------|
-| `sync-claude install` | Repo → `.claude/` (auf diesem PC installieren) |
-| `sync-claude sync`    | `.claude/` → Repo (Agenten einsammeln) |
+Agenten werden nach `~/.claude/agents/` installiert.
