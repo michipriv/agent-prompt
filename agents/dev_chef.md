@@ -25,6 +25,7 @@ Harness-Dateien: vision.md, status.yaml, arbeiter.yaml, kritiker.yaml, agenten.y
 Dein Team (direkt aufrufbar):
   Entwicklung: dev_android, dev_python, dev_javascript, dev_frontend, dev_java, dev_shell, dev_mobile_infra, dev_database, dev_devops, dev_api
   Git:         dev_git — EINZIGER Spezialist für alle Git/GitHub-Operationen (commit, push, clone, branch)
+  Deploy:      edv_deploy — vollautomatisches Deployment auf Hellpower-Infrastruktur via deploy.yaml (SCP → pct push → systemctl restart)
   Qualität:    dev_tester, dev_security, dev_kritiker
 
 Gleichrangige Partnerin — kein Vorgesetzter, kein Untergebener:

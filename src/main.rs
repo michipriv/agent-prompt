@@ -1,4 +1,5 @@
 // Filename: src/main.rs
+// V 1.3 Cross-Platform Windows + Linux; Backup in temp_dir
 // V 1.2 Backup vor Install; claude_dir auto per USERPROFILE
 // V 1.1 config.toml-Suche im CWD
 // V 1.0 Initial — sync/install zwischen .claude/ und Repo
@@ -29,13 +30,22 @@ struct Rule {
     extension:   String,
 }
 
-/// Löst `claude_dir` auf — ersetzt %USERPROFILE% oder auto-erkennt den User.
+/// Home-Verzeichnis: Windows = USERPROFILE, Linux/Mac = HOME.
+fn home_dir() -> PathBuf {
+    env::var("USERPROFILE")
+        .or_else(|_| env::var("HOME"))
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from("."))
+}
+
+/// Löst claude_dir auf — ersetzt %USERPROFILE% (Windows) und $HOME (Linux).
 fn resolve_claude_dir(raw: &str) -> PathBuf {
-    let userprofile = env::var("USERPROFILE").unwrap_or_else(|_| {
-        let username = env::var("USERNAME").unwrap_or_else(|_| "Unknown".into());
-        format!("C:\\Users\\{}", username)
-    });
-    PathBuf::from(raw.replace("%USERPROFILE%", &userprofile))
+    let home = home_dir();
+    let home_str = home.to_string_lossy();
+    PathBuf::from(
+        raw.replace("%USERPROFILE%", &home_str)
+           .replace("$HOME", &home_str),
+    )
 }
 
 /// Gibt true zurück wenn src neuer als dest ist oder dest nicht existiert.
@@ -101,13 +111,15 @@ fn sync_dir(src_dir: &Path, dest_dir: &Path, ext: &str) -> usize {
     count
 }
 
-/// Erstellt Backup aller vorhandenen Zieldateien nach C:\tmp\backup\<timestamp>\.
+/// Backup nach <tmp>/sync-claude-backup/<timestamp>/ — plattformunabhängig.
 fn backup_existing(claude: &Path, config: &Config) -> PathBuf {
     let ts = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or(0);
-    let backup_root = PathBuf::from(format!("C:\\tmp\\backup\\{}", ts));
+    let backup_root = env::temp_dir()
+        .join("sync-claude-backup")
+        .join(ts.to_string());
     let mut count = 0;
 
     for rule in &config.rules {
@@ -130,11 +142,9 @@ fn backup_existing(claude: &Path, config: &Config) -> PathBuf {
         }
     }
 
-    // CLAUDE.md sichern
     let claude_md = claude.join("CLAUDE.md");
     if claude_md.exists() {
-        let dest = backup_root.join("CLAUDE.md");
-        if copy_file(&claude_md, &dest) {
+        if copy_file(&claude_md, &backup_root.join("CLAUDE.md")) {
             count += 1;
         }
     }
@@ -177,21 +187,17 @@ fn run_sync(config: &Config) {
 }
 
 fn run_install(config: &Config) {
-    let userprofile = env::var("USERPROFILE").unwrap_or_else(|_| {
-        let u = env::var("USERNAME").unwrap_or_else(|_| "Unknown".into());
-        format!("C:\\Users\\{}", u)
-    });
-    let username = PathBuf::from(&userprofile)
+    let home = home_dir();
+    let username = home
         .file_name()
         .map(|n| n.to_string_lossy().into_owned())
-        .unwrap_or_else(|| "Unknown".into());
+        .unwrap_or_else(|| "unknown".into());
 
-    let claude = PathBuf::from(&userprofile).join(".claude");
+    let claude = home.join(".claude");
     let repo   = PathBuf::from(&config.paths.repo_dir);
 
-    println!("Ziel-User: {} → {}", username, claude.display());
+    println!("Ziel: {} → {}", username, claude.display());
 
-    // Backup vorhandener Dateien
     backup_existing(&claude, config);
 
     let mut total = 0;
@@ -215,7 +221,7 @@ fn run_install(config: &Config) {
         }
     }
 
-    println!("\nInstall abgeschlossen: {} Datei(en) für User '{}' installiert", total, username);
+    println!("\nInstall abgeschlossen: {} Datei(en) für '{}' installiert", total, username);
 }
 
 fn main() {

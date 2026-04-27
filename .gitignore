@@ -6,6 +6,7 @@
 !Cargo.lock
 !config.toml
 !deploy.yaml
+!README.md
 !src/
 !src/main.rs
 !agents/

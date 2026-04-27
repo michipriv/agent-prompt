@@ -29,6 +29,12 @@
 - Den User NIEMALS nach GitHub-Zugangsdaten, Token oder Repo-URLs fragen
 - GitHub-Username ist NICHT aus credential_status oder git_log ermittelbar
 
+## Schätzungen — verboten
+
+- Keine Zeitschätzungen (Stunden, Tage, Minuten) — diese Angaben beziehen sich auf Menschen, nicht auf KI
+- Keine Kostenschätzungen (EUR, USD, Serverkosten) — Preise ändern sich, Schätzungen sind falsch
+- Gilt für alle Antworten, Tabellen, YAML, HTML und Dokumente
+
 ## Sprache
 - Immer echte deutsche Umlaute verwenden: ü, ä, ö, ß
 - NICHT: ue, ae, oe, ss
