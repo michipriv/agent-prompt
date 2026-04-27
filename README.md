@@ -1,68 +1,57 @@
-# sync-claude
+# sync-claude — Claude Agenten installieren
 
-Synchronisiert Claude-Agenten zwischen `.claude/` und diesem Repo.
+## Windows 11
 
-## Voraussetzungen
-
-Rust installieren (einmalig):
+**1. Rust installieren**
+PowerShell als Administrator:
+```powershell
+winget install Rustlang.Rustup
 ```
-# Windows / Linux / Mac
+Danach PowerShell neu starten.
+
+**2. Repo klonen & kompilieren**
+```powershell
+git clone https://github.com/michipriv/agent-prompt C:\data\agent-prompt
+cd C:\data\agent-prompt
+cargo build --release
+```
+
+**3. Agenten installieren**
+```powershell
+.\target\release\sync-claude.exe install
+```
+Agenten landen in `%USERPROFILE%\.claude\agents\`.
+Backup vorher automatisch in `%TEMP%\sync-claude-backup\`.
+
+---
+
+## Linux (Debian / Ubuntu)
+
+**1. Rust installieren**
+```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
 ```
 
-## Kompilieren
-
-```
+**2. Repo klonen & kompilieren**
+```bash
+git clone https://github.com/michipriv/agent-prompt /data/agent-prompt
+cd /data/agent-prompt
 cargo build --release
 ```
 
-Binary liegt danach unter:
-- Windows: `target\release\sync-claude.exe`
-- Linux:   `target/release/sync-claude`
-
-## Verwendung
-
-```
-sync-claude sync      # .claude/ → Repo  (Agenten ins Repo einsammeln)
-sync-claude install   # Repo → .claude/  (Agenten auf diesem PC installieren)
-```
-
-`install` erstellt automatisch ein Backup unter `<tmp>/sync-claude-backup/<timestamp>/`.
-
-## config.toml
-
-```toml
-[paths]
-# Windows:
-claude_dir = "%USERPROFILE%\\.claude"
-repo_dir   = "C:\\data\\agent-prompt"
-
-# Linux:
-# claude_dir = "$HOME/.claude"
-# repo_dir   = "/data/agent-prompt"
-
-[[rules]]
-subdir      = "agents"
-dest_subdir = "agents"
-extension   = "md"
-
-[[rules]]
-subdir      = "rules"
-dest_subdir = "rules"
-extension   = "md"
-```
-
-## Typischer Workflow
-
-```
-# Agenten vom lokalen .claude/ ins Repo holen
-sync-claude sync
-
-# Repo committen & pushen (git)
-
-# Auf anderem PC: Repo klonen, kompilieren, installieren
-git clone https://github.com/michipriv/agent-prompt
-cd agent-prompt
-cargo build --release
+**3. Agenten installieren**
+```bash
 ./target/release/sync-claude install
 ```
+Agenten landen in `~/.claude/agents/`.
+Backup vorher automatisch in `/tmp/sync-claude-backup/`.
+
+---
+
+## Befehle
+
+| Befehl | Funktion |
+|--------|----------|
+| `sync-claude install` | Repo → `.claude/` (auf diesem PC installieren) |
+| `sync-claude sync`    | `.claude/` → Repo (Agenten einsammeln) |
