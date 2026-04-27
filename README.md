@@ -8,7 +8,7 @@ TOKEN = GitHub Personal Access Token (unter github.com → Settings → Develope
 
 PowerShell:
 ```powershell
-$TOKEN = "dein-token-hier"
+$TOKEN = 
 Invoke-WebRequest -Uri "https://$TOKEN@github.com/michipriv/agent-prompt/archive/refs/heads/master.zip" -OutFile "$env:TEMP\agents.zip"
 Expand-Archive "$env:TEMP\agents.zip" -DestinationPath "$env:TEMP\agents" -Force
 cd "$env:TEMP\agents\agent-prompt-master"
@@ -22,7 +22,7 @@ Agenten landen in `%USERPROFILE%\.claude\agents\`.
 ## Linux (Debian / Ubuntu)
 
 ```bash
-TOKEN="dein-token-hier"
+TOKEN=
 wget "https://$TOKEN@github.com/michipriv/agent-prompt/archive/refs/heads/master.zip"
 unzip master.zip
 cd agent-prompt-master
