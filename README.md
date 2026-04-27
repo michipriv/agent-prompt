@@ -1,31 +1,33 @@
 # Claude Agenten installieren
 
+TOKEN = GitHub Personal Access Token (unter github.com → Settings → Developer settings → Personal access tokens)
+
+---
+
 ## Windows 11
 
-1. Repo herunterladen: [ZIP Download](https://github.com/michipriv/agent-prompt/archive/refs/heads/master.zip)
-2. ZIP entpacken
-3. PowerShell im entpackten Ordner öffnen:
+PowerShell:
 ```powershell
+$TOKEN = "dein-token-hier"
+Invoke-WebRequest -Uri "https://$TOKEN@github.com/michipriv/agent-prompt/archive/refs/heads/master.zip" -OutFile "$env:TEMP\agents.zip"
+Expand-Archive "$env:TEMP\agents.zip" -DestinationPath "$env:TEMP\agents" -Force
+cd "$env:TEMP\agents\agent-prompt-master"
 .\bin\sync-claude.exe install
 ```
 
-Agenten werden nach `%USERPROFILE%\.claude\agents\` installiert.
+Agenten landen in `%USERPROFILE%\.claude\agents\`.
 
 ---
 
 ## Linux (Debian / Ubuntu)
 
-1. Repo herunterladen:
 ```bash
-wget https://github.com/michipriv/agent-prompt/archive/refs/heads/master.zip
+TOKEN="dein-token-hier"
+wget "https://$TOKEN@github.com/michipriv/agent-prompt/archive/refs/heads/master.zip"
 unzip master.zip
 cd agent-prompt-master
-```
-
-2. Binary ausführbar machen und installieren:
-```bash
 chmod +x bin/sync-claude
 ./bin/sync-claude install
 ```
 
-Agenten werden nach `~/.claude/agents/` installiert.
+Agenten landen in `~/.claude/agents/`.
