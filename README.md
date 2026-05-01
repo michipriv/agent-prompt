@@ -1,8 +1,5 @@
 # Claude Agenten installieren
 
-TOKEN = GitHub Personal Access Token (unter github.com → Settings → Developer settings → Personal access tokens)
-
----
 
 ## Windows 11
 
