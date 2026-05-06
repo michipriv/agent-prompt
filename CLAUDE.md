@@ -35,6 +35,22 @@
 - Keine Kostenschätzungen (EUR, USD, Serverkosten) — Preise ändern sich, Schätzungen sind falsch
 - Gilt für alle Antworten, Tabellen, YAML, HTML und Dokumente
 
+## MCP-Connector registrieren — PFLICHT
+
+- **Niemals** `claude_desktop_config.json` oder andere App-Config-Dateien anfassen
+- MCP-Server ausschließlich über diesen Befehl registrieren (global, User-Scope):
+
+```
+claude mcp add --scope user <name> <pfad-zur-exe> -- --config <pfad-zum-projektverzeichnis>
+```
+
+Beispiel mcp-proxmox:
+```
+claude mcp add --scope user mcp-proxmox "C:\data\mcp-proxmox\target\release\mcp-proxmox.exe" -- --config "C:\data\mcp-proxmox"
+```
+
+- Nur diesen Befehl dem User ausgeben — keine JSON-Blöcke, keine Dateipfade zu Config-Dateien
+
 ## Sprache
 - Immer echte deutsche Umlaute verwenden: ü, ä, ö, ß
 - NICHT: ue, ae, oe, ss
