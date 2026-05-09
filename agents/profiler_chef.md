@@ -77,6 +77,19 @@ WORKFLOW
 
 ---
 
+TEAM-VOLLSTÄNDIGKEIT (Pflicht-Gate)
+Jedes Team das profiler_chef koordiniert, beauftragt oder übergibt muss drei Pflichtbestandteile haben:
+  1. Chef-Agent (Koordinator)
+  2. Mindestens ein Fachspezialist
+  3. Ein Kritiker-Agent
+
+Fehlt der Kritiker → Team ist unvollständig → profiler_chef stoppt und beauftragt Nachbesserung bevor das Team produktiv eingesetzt wird.
+
+ISOLATION-REGEL (Spezialist ↔ Kritiker)
+Fachspezialist und Kritiker werden IMMER als unabhängige Sub-Tasks gestartet — kein geteilter Kontext. Der Spezialist liefert sein Ergebnis. Danach startet der Kritiker separat mit dem Ergebnis des Spezialisten als Input — nicht mit dessen Konversation.
+
+Reihenfolge: Spezialist → Ergebnis übergeben → Kritiker frisch starten → Kritik-Ergebnis konsolidieren.
+
 CONSTRAINTS
 
 - Ausschließlich legal zugängliche, öffentlich verfügbare Quellen
@@ -142,3 +155,5 @@ Dieser Agent beantwortet NICHT: Operative Überwachung, illegale Datenbeschaffun
 □ profiler_kritiker als letzten Schritt eingesetzt?
 □ Echte Umlaute: ü, ä, ö, ß — keine ue/ae/oe/ss?
 □ Keine Zeitschätzungen oder Kostenschätzungen?
+□ Team-Vollständigkeit geprüft (Kritiker vorhanden)?
+□ Spezialist und Kritiker isoliert gestartet (kein geteilter Kontext)?

@@ -1,0 +1,409 @@
+# compiler.yaml — Compiler und Tools gruppiert nach Zielplattform / Prozessor
+# Dieses System: Windows 11 Pro x86_64
+# Erstellt: 2026-05-09
+# Zweck: Pro Zielplattform alle benötigten Tools zum Kompilieren und Erstellen von Programmen
+
+# ============================================================
+# PLATTFORM 1: WINDOWS x86_64 (native)
+# ============================================================
+windows_x64:
+  prozessor: x86_64 (Intel/AMD 64-bit)
+  betriebssystem: Windows 10/11
+
+  stack_msvc:
+    name: MSVC Stack (empfohlen für Windows-native)
+    compiler:
+      exe: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe
+      version: "14.44.35207"
+    linker:
+      exe: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\link.exe
+    assembler: ml64.exe  # im gleichen bin-Verzeichnis
+    build_system:
+      cmake: C:\Program Files\CMake\bin\cmake.exe  # v4.2.1
+      ninja: C:\Program Files\CMake\bin\ninja.exe
+      nmake: im VS BuildTools enthalten
+    aktivierung: vcvarsall.bat x64  # Pflicht vor Verwendung
+    sprachen: C, C++
+    status: installiert
+
+  stack_clang:
+    name: Clang/LLVM Stack
+    compiler:
+      c:   C:\Program Files\LLVM\bin\clang.exe    # v21.1.8
+      cpp: C:\Program Files\LLVM\bin\clang++.exe
+    linker:
+      exe: C:\Program Files\LLVM\bin\lld-link.exe  # LLVM Linker
+    build_system:
+      cmake: C:\Program Files\CMake\bin\cmake.exe
+      ninja: C:\Program Files\CMake\bin\ninja.exe
+    analyse_tools:
+      - C:\Program Files\LLVM\bin\clang-tidy.exe
+      - C:\Program Files\LLVM\bin\clang-format.exe
+      - C:\Program Files\LLVM\bin\clangd.exe
+    sprachen: C, C++
+    status: installiert
+    hinweis: Benötigt MSVC-Headers — vcvarsall.bat aktivieren oder Include-Pfade manuell setzen
+
+  stack_rust:
+    name: Rust (Windows nativ)
+    compiler: C:\Users\mmade\.cargo\bin\rustc.exe  # v1.92.0
+    build_system: C:\Users\mmade\.cargo\bin\cargo.exe
+    linker: MSVC link.exe (Standard-Linker für x86_64-pc-windows-msvc)
+    target: x86_64-pc-windows-msvc
+    sprachen: Rust
+    status: installiert
+
+  stack_zig:
+    name: Zig (Windows nativ)
+    compiler: C:\zig\zig.exe  # v0.13.0
+    build_system: zig build (integriert)
+    linker: integriert in Zig
+    sprachen: Zig, C, C++ (zig cc als Drop-in)
+    status: installiert
+
+  stack_nodejs:
+    name: Node.js / JavaScript / TypeScript
+    runtime: C:\Program Files\nodejs\node.exe  # v22.16.0 LTS
+    build_system: npm, npx (im nodejs-Verzeichnis)
+    sprachen: JavaScript, TypeScript
+    status: installiert
+
+  stack_java:
+    name: Java (JRE)
+    runtime: C:\Program Files\Eclipse Adoptium\jre-21.0.10.7-hotspot\bin\java.exe  # OpenJDK 21 LTS
+    compiler: javac  # NICHT vorhanden — nur JRE, kein JDK
+    build_system: FEHLT (gradle, maven — nicht installiert)
+    sprachen: Java
+    status: nur_laufzeitumgebung
+    fehlend: JDK (javac) für Kompilierung benötigt
+
+# ============================================================
+# PLATTFORM 2: LINUX x86_64 (Cross von Windows)
+# ============================================================
+linux_x64:
+  prozessor: x86_64 (64-bit)
+  betriebssystem: Linux (Ubuntu, Debian, etc.)
+  build_methode: Cross-Compilation von Windows
+
+  stack_rust_cross:
+    name: Rust → Linux x86_64
+    compiler: C:\Users\mmade\.cargo\bin\rustc.exe
+    build_system: C:\Users\mmade\.cargo\bin\cargo.exe
+    target: x86_64-unknown-linux-gnu
+    linker:
+      exe: C:\Program Files\LLVM\bin\clang.exe
+      config: >
+        In .cargo/config.toml eintragen:
+        [target.x86_64-unknown-linux-gnu]
+        linker = "C:\\Program Files\\LLVM\\bin\\clang.exe"
+        rustflags = ["-C", "linker-flavor=ld.lld", "-C", "link-arg=--target=x86_64-unknown-linux-gnu"]
+    befehl: cargo build --target x86_64-unknown-linux-gnu --release
+    status: funktionsfähig_nach_linker_config
+
+  stack_clang_cross:
+    name: Clang → Linux x86_64
+    compiler: C:\Program Files\LLVM\bin\clang.exe  # v21.1.8
+    linker: C:\Program Files\LLVM\bin\lld.exe
+    target_flag: --target=x86_64-unknown-linux-gnu
+    sysroot: FEHLT  # glibc-Headers aus WSL oder separatem Paket
+    status: möglich_mit_sysroot
+    sysroot_beschaffen: wsl --install Ubuntu (dann /usr/include aus WSL nutzen)
+
+  stack_zig_cross:
+    name: Zig → Linux x86_64
+    compiler: C:\zig\zig.exe
+    linker: integriert
+    target_flag: -target x86_64-linux-gnu
+    befehl: zig build -Dtarget=x86_64-linux-gnu
+    status: sofort_verfügbar  # Zig hat eingebaute libc
+    hinweis: Kein separates Sysroot nötig
+
+  wsl:
+    name: WSL (nativer Linux-Compiler)
+    exe: C:\WINDOWS\System32\wsl.exe
+    distros_installiert: keine
+    install: wsl --install Ubuntu
+    status: installiert_ohne_distro
+
+# ============================================================
+# PLATTFORM 3: LINUX ARM64 / aarch64 (Cross von Windows)
+# ============================================================
+linux_arm64:
+  prozessor: ARM Cortex-A (64-bit) — Raspberry Pi 4/5, Rock Pi, Server
+  betriebssystem: Linux ARM64 (Ubuntu, Debian, etc.)
+  build_methode: Cross-Compilation von Windows
+
+  stack_rust_cross:
+    name: Rust → Linux ARM64
+    compiler: C:\Users\mmade\.cargo\bin\rustc.exe
+    build_system: C:\Users\mmade\.cargo\bin\cargo.exe
+    target: aarch64-unknown-linux-gnu
+    linker:
+      exe: C:\Program Files\LLVM\bin\clang.exe
+      config: >
+        In .cargo/config.toml eintragen:
+        [target.aarch64-unknown-linux-gnu]
+        linker = "C:\\Program Files\\LLVM\\bin\\clang.exe"
+        rustflags = ["-C", "linker-flavor=ld.lld", "-C", "link-arg=--target=aarch64-unknown-linux-gnu"]
+    befehl: cargo build --target aarch64-unknown-linux-gnu --release
+    status: funktionsfähig_nach_linker_config
+
+  stack_zig_cross:
+    name: Zig → Linux ARM64
+    compiler: C:\zig\zig.exe
+    linker: integriert
+    target_flag: -target aarch64-linux-gnu
+    status: sofort_verfügbar
+
+  stack_clang_cross:
+    name: Clang → Linux ARM64
+    compiler: C:\Program Files\LLVM\bin\clang.exe
+    target_flag: --target=aarch64-unknown-linux-gnu
+    sysroot: FEHLT
+    status: möglich_mit_sysroot
+
+# ============================================================
+# PLATTFORM 4: ESP32 / ESP32-S2 / ESP32-S3 (Xtensa LX6/LX7)
+# ============================================================
+esp32_xtensa:
+  prozessor: Xtensa LX6 (ESP32) / Xtensa LX7 (ESP32-S2, ESP32-S3)
+  betriebssystem: FreeRTOS (via ESP-IDF) oder Arduino-Framework
+
+  stack_espidf:
+    name: ESP-IDF 5.4 (nativer Espressif-Stack, empfohlen)
+    compiler:
+      esp32:   C:\Users\mmade\.espressif\tools\xtensa-esp-elf\esp-14.2.0_20241119\xtensa-esp-elf\bin\xtensa-esp32-elf-gcc.exe
+      esp32s2: C:\Users\mmade\.espressif\tools\xtensa-esp-elf\esp-14.2.0_20241119\xtensa-esp-elf\bin\xtensa-esp32s2-elf-gcc.exe
+      esp32s3: C:\Users\mmade\.espressif\tools\xtensa-esp-elf\esp-14.2.0_20241119\xtensa-esp-elf\bin\xtensa-esp32s3-elf-gcc.exe
+    linker: integriert in Compiler-Paket
+    build_system:
+      frontend: idf.py  # C:\esp\esp-idf\tools\idf.py
+      backend_cmake: C:\Program Files\CMake\bin\cmake.exe  # v4.2.1
+      backend_ninja: C:\Program Files\CMake\bin\ninja.exe
+    python: C:\Users\mmade\.espressif\python_env\idf5.4_py3.12_env\Scripts\python.exe
+    flash_tool: idf.py flash  # über esptool.py
+    debug_tool: C:\Users\mmade\.espressif\tools\openocd-esp32\v0.12.0-esp32-20241016\openocd-esp32\bin\openocd.exe
+    aktivierung: C:\esp\esp-idf\export.bat
+    befehl_build: idf.py build
+    befehl_flash: idf.py -p COM<X> flash
+    sprachen: C, C++
+    status: installiert
+    achtung: CMake 4.x — cmake_minimum_required in Projekten ggf. anpassen
+
+  stack_arduino:
+    name: Arduino Framework (ESP32 Core)
+    ide: C:\Program Files\Arduino IDE
+    compiler: C:\Users\mmade\AppData\Local\Arduino15\packages\esp32\tools\esp-x32\2511\bin\xtensa-esp32-elf-gcc.exe
+    build_system: Arduino IDE intern (CMake/Ninja-basiert)
+    flash_tool: esptool.py (in Arduino IDE integriert)
+    sprachen: C, C++ (Arduino-API)
+    status: installiert
+
+# ============================================================
+# PLATTFORM 5: ESP32-C3 / C6 / H2 (RISC-V 32-bit)
+# ============================================================
+esp32_riscv:
+  prozessor: RISC-V RV32IMC (ESP32-C3, ESP32-C6, ESP32-H2)
+  betriebssystem: FreeRTOS (via ESP-IDF)
+
+  stack_espidf:
+    name: ESP-IDF 5.4 (RISC-V)
+    compiler: C:\Users\mmade\.espressif\tools\riscv32-esp-elf\esp-14.2.0_20241119\riscv32-esp-elf\bin\riscv32-esp-elf-gcc.exe
+    linker: integriert
+    build_system:
+      frontend: idf.py  # C:\esp\esp-idf\tools\idf.py
+      backend_cmake: C:\Program Files\CMake\bin\cmake.exe
+      backend_ninja: C:\Program Files\CMake\bin\ninja.exe
+    python: C:\Users\mmade\.espressif\python_env\idf5.4_py3.12_env\Scripts\python.exe
+    flash_tool: idf.py flash
+    debug_tool: C:\Users\mmade\.espressif\tools\openocd-esp32\v0.12.0-esp32-20241016\openocd-esp32\bin\openocd.exe
+    aktivierung: C:\esp\esp-idf\export.bat
+    boards:
+      - ESP32-C3 (2.4GHz WiFi + BT5)
+      - ESP32-C6 (WiFi6 + BT5 + Zigbee)
+      - ESP32-H2 (Zigbee + Thread, kein WiFi)
+    status: installiert
+
+# ============================================================
+# PLATTFORM 6: AVR (Arduino Uno, Mega, Nano, etc.)
+# ============================================================
+avr:
+  prozessor: AVR 8-bit (ATmega328P, ATmega2560, ATtiny, etc.)
+  betriebssystem: Bare-metal (kein OS)
+
+  stack_arduino:
+    name: Arduino AVR Stack
+    compiler: C:\Users\mmade\AppData\Local\Arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\bin\avr-gcc.exe
+    compiler_cpp: avr-g++.exe  # im gleichen Verzeichnis
+    linker: avr-ld.exe  # im gleichen Verzeichnis
+    objcopy: avr-objcopy.exe  # HEX-Datei erzeugen
+    size_tool: avr-size.exe
+    flash_tool: avrdude  # im Arduino15-Paket enthalten
+    build_system: Arduino IDE intern
+    ide: C:\Program Files\Arduino IDE
+    sprachen: C, C++ (Arduino-API)
+    status: installiert
+    ausgabe: .hex-Datei (über avr-objcopy aus .elf)
+
+# ============================================================
+# PLATTFORM 7: ARM Cortex-M (bare-metal / RTOS)
+# ============================================================
+arm_cortex_m:
+  prozessor: ARM Cortex-M0/M0+/M3/M4/M7/M33 (32-bit)
+  boards: STM32, nRF52, RP2040 (Pico), SAMD21, SAM3
+  betriebssystem: Bare-metal oder FreeRTOS / Zephyr
+
+  stack_gcc_arm:
+    name: arm-none-eabi-gcc (GNU ARM Embedded Toolchain)
+    compiler: NICHT INSTALLIERT
+    install: https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
+    install_pfad_nach_installation: C:\Program Files (x86)\GNU Arm Embedded Toolchain\<version>\bin\arm-none-eabi-gcc.exe
+    benötigte_tools_nach_install:
+      - arm-none-eabi-gcc     # C-Compiler
+      - arm-none-eabi-g++     # C++-Compiler
+      - arm-none-eabi-ld      # Linker
+      - arm-none-eabi-objcopy # ELF → BIN/HEX
+      - arm-none-eabi-size    # Flash/RAM-Nutzung anzeigen
+      - arm-none-eabi-gdb     # Debugger
+    build_system: CMake + Ninja (bereits installiert)
+    flash_debug: OpenOCD oder probe-rs (beide fehlen für ARM standalone)
+    status: FEHLT
+
+  stack_rust_embedded:
+    name: Rust Embedded (no_std, bare-metal)
+    compiler: C:\Users\mmade\.cargo\bin\rustc.exe
+    build_system: C:\Users\mmade\.cargo\bin\cargo.exe
+    linker: C:\Program Files\LLVM\bin\lld.exe
+    targets_installiert: keine
+    targets_benötigt:
+      - thumbv7em-none-eabihf  # Cortex-M4F, M7 (STM32F4, nRF52, Pico2)
+      - thumbv6m-none-eabi     # Cortex-M0/M0+ (STM32F0, RP2040 Kern 0)
+      - thumbv7m-none-eabi     # Cortex-M3 (STM32F1, STM32F2)
+      - thumbv8m.main-none-eabihf  # Cortex-M33 (nRF9160, STM32L5)
+    install_targets: rustup target add thumbv7em-none-eabihf
+    flash_debug:
+      probe_rs: FEHLT — cargo install probe-rs-tools
+    status: compiler_ok_targets_und_flashtool_fehlen
+
+# ============================================================
+# PLATTFORM 8: ANDROID (ARM64 + ARM32 + x86)
+# ============================================================
+android:
+  prozessor: ARM64-v8a (primär), armeabi-v7a, x86_64
+  betriebssystem: Android (via ART / JVM)
+
+  stack_java_android:
+    name: Java/Kotlin Android Stack
+    runtime: C:\Program Files\Eclipse Adoptium\jre-21.0.10.7-hotspot\bin\java.exe
+    compiler_java: FEHLT (nur JRE, kein JDK/javac)
+    build_tools: C:\Users\mmade\AppData\Local\Android\Sdk\build-tools\36.0.0
+    adb: C:\Users\mmade\AppData\Local\Android\Sdk\platform-tools\adb.exe
+    build_system: Gradle (FEHLT — nicht installiert)
+    ide: Android Studio (FEHLT — nicht installiert)
+    fehlend:
+      - JDK (javac, nicht nur JRE)
+      - Gradle
+      - Android Studio oder Kommandozeilen-SDK-Tools
+    status: unvollständig
+
+  stack_ndk_native:
+    name: NDK Native C/C++ (JNI / React Native / Flutter)
+    ndk: NICHT INSTALLIERT
+    install: C:\Users\mmade\AppData\Local\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.exe "ndk;27.2.12479018"
+    tools_nach_install:
+      - aarch64-linux-android-clang   # ARM64 (primär)
+      - armv7a-linux-androideabi-clang # ARM32
+      - x86_64-linux-android-clang    # x86_64 (Emulator)
+      - ndk-build oder CMake
+    status: FEHLT
+
+# ============================================================
+# PLATTFORM 9: WEBASSEMBLY (WASM)
+# ============================================================
+webassembly:
+  prozessor: WebAssembly (virtuell, stack-basiert)
+  laufzeit: Browser, Node.js, Wasmtime, Wasmer
+
+  stack_zig_wasm:
+    name: Zig → WebAssembly
+    compiler: C:\zig\zig.exe  # v0.13.0
+    linker: integriert
+    target_wasi:     zig build -Dtarget=wasm32-wasi
+    target_browser:  zig build -Dtarget=wasm32-freestanding
+    build_system: zig build (integriert)
+    laufzeit_tools:
+      wasmtime: FEHLT
+      wasmer: FEHLT
+    status: compiler_installiert_laufzeit_fehlt
+
+  stack_rust_wasm:
+    name: Rust → WebAssembly
+    compiler: C:\Users\mmade\.cargo\bin\rustc.exe
+    build_system: C:\Users\mmade\.cargo\bin\cargo.exe
+    target_browser: wasm32-unknown-unknown
+    target_wasi: wasm32-wasip1
+    targets_installiert: keine
+    install_target: rustup target add wasm32-unknown-unknown
+    tools:
+      wasm_pack: FEHLT — cargo install wasm-pack
+      wasm_opt: FEHLT — binaryen Paket
+    status: compiler_ok_targets_und_tools_fehlen
+
+  stack_clang_wasm:
+    name: Clang → WebAssembly
+    compiler: C:\Program Files\LLVM\bin\clang.exe  # v21.1.8
+    linker: C:\Program Files\LLVM\bin\wasm-ld.exe  # in LLVM enthalten
+    target_flag: --target=wasm32-unknown-wasi
+    status: sofort_verfügbar  # wasm-ld ist Teil von LLVM
+
+# ============================================================
+# GEMEINSAME BUILD-INFRASTRUKTUR (alle Plattformen)
+# ============================================================
+build_infrastruktur:
+
+  cmake:
+    exe: C:\Program Files\CMake\bin\cmake.exe
+    version: "4.2.1"
+    verwendet_von: [windows_x64, esp32_xtensa, esp32_riscv, arm_cortex_m]
+
+  ninja:
+    exe: C:\Program Files\CMake\bin\ninja.exe
+    version: via CMake
+    verwendet_von: [windows_x64, esp32_xtensa, esp32_riscv, arm_cortex_m]
+
+  llvm_tools:
+    basis: C:\Program Files\LLVM\bin\
+    tools:
+      - clang.exe / clang++.exe   # Compiler
+      - lld.exe / lld-link.exe    # Linker
+      - wasm-ld.exe               # WASM-Linker
+      - clangd.exe                # IDE LSP
+      - clang-tidy.exe            # Statische Analyse
+      - clang-format.exe          # Code-Formatierung
+      - llvm-ar.exe               # Archiver (static libs)
+      - llvm-nm.exe               # Symbol-Tabelle
+    version: "21.1.8"
+
+  git:
+    status: via_mcp-git_MCP_Tools
+    hinweis: Bash-Git verboten — ausschließlich mcp__mcp-git__* verwenden
+
+# ============================================================
+# ÜBERSICHT INSTALLATIONSSTATUS
+# ============================================================
+status_übersicht:
+  vollständig_installiert:
+    - windows_x64 (MSVC + Clang + Rust + Zig + Node)
+    - esp32_xtensa (ESP-IDF 5.4 + Arduino)
+    - esp32_riscv (ESP-IDF 5.4)
+    - avr (Arduino IDE + avr-gcc)
+
+  teilweise_installiert:
+    - linux_x64 (Rust+Zig cross ok, Clang braucht Sysroot)
+    - linux_arm64 (Rust+Zig cross ok, Clang braucht Sysroot)
+    - webassembly (Zig+Clang ok, Rust-Targets fehlen)
+    - android (ADB+Build-Tools ok, NDK+JDK+Gradle fehlen)
+
+  nicht_installiert:
+    - arm_cortex_m standalone (arm-none-eabi-gcc, probe-rs)
+    - wsl_distro (wsl.exe vorhanden, kein Ubuntu/Debian)

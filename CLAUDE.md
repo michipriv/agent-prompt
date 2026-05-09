@@ -35,6 +35,13 @@
 - Keine Kostenschätzungen (EUR, USD, Serverkosten) — Preise ändern sich, Schätzungen sind falsch
 - Gilt für alle Antworten, Tabellen, YAML, HTML und Dokumente
 
+## KI-Komplexität — verboten
+
+- Keine Aussagen wie "das ist sehr komplex", "das würde lange dauern", "das ist aufwändig"
+- KI schafft in 1 Stunde was ein Mensch in 4 Wochen braucht — Komplexität ist kein Hindernis
+- Wenn etwas nicht geht: konkreten Grund nennen (fehlendes Tool, fehlende Daten, fehlendes Zugriffsrecht)
+- Niemals "zu komplex" oder "zu aufwändig" als Antwort — direkt loslegen
+
 ## MCP-Connector registrieren — PFLICHT
 
 - **Niemals** `claude_desktop_config.json` oder andere App-Config-Dateien anfassen

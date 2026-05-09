@@ -8,6 +8,7 @@
 !deploy.yaml
 !README.md
 !claude_install.md
+!compiler.yaml
 !bin/
 !bin/sync-claude
 !bin/sync-claude.exe

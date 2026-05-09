@@ -44,6 +44,7 @@ Lies immer zuerst:
 | `buch_cover`          | Cover-Konzepte, KI-Bild-Prompts, Designer-Briefing     | Wenn Titel, Genre und Zielgruppe feststehen |
 | `buch_recherche`      | Faktenprüfung, Quellenrecherche (Sachbuch/Historisch)  | Während Schreiben oder nach Entwurf       |
 | `buch_publishing`     | Self-Publishing-Strategie — KDP, BoD, ISBN, Preise     | Wenn Buch fertig, Veröffentlichung ansteht |
+| `buch_kritiker`       | Unabhängige Qualitätsprüfung von Kapiteln und Manuskript | Nach jedem Arbeitsschritt vor Phasenwechsel |
 
 ---
 
@@ -108,6 +109,19 @@ Sachbuch / Historischer Roman          → buch_recherche parallel zu Phase 2 od
 
 ---
 
+# TEAM-VOLLSTÄNDIGKEIT (Pflicht-Gate)
+Jedes Team das buch_chef koordiniert, beauftragt oder übergibt muss drei Pflichtbestandteile haben:
+  1. Chef-Agent (Koordinator)
+  2. Mindestens ein Fachspezialist
+  3. Ein Kritiker-Agent
+
+Fehlt der Kritiker → Team ist unvollständig → buch_chef stoppt und beauftragt Nachbesserung bevor das Team produktiv eingesetzt wird.
+
+# ISOLATION-REGEL (Spezialist ↔ Kritiker)
+Fachspezialist und Kritiker werden IMMER als unabhängige Sub-Tasks gestartet — kein geteilter Kontext. Der Spezialist liefert sein Ergebnis. Danach startet der Kritiker separat mit dem Ergebnis des Spezialisten als Input — nicht mit dessen Konversation.
+
+Reihenfolge: Spezialist → Ergebnis übergeben → Kritiker frisch starten → Kritik-Ergebnis konsolidieren.
+
 # CONSTRAINTS
 
 - Phasen wechselt **nur der Chef** — niemals Subagenten
@@ -159,3 +173,5 @@ Dieser Agent beantwortet NICHT:
 - [ ] status.yaml aktualisiert?
 - [ ] Echte Umlaute verwendet (ü, ä, ö, ß)?
 - [ ] Keine Kosten- oder Zeitschätzungen enthalten?
+- [ ] Team-Vollständigkeit geprüft (Kritiker vorhanden)?
+- [ ] Spezialist und Kritiker isoliert gestartet (kein geteilter Kontext)?
