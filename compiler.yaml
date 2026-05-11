@@ -1,6 +1,7 @@
 # compiler.yaml — Compiler und Tools gruppiert nach Zielplattform / Prozessor
-# Dieses System: Windows 11 Pro x86_64
-# Erstellt: 2026-05-09
+# Dieses System: Windows 11 Pro x86_64 + Linux CT 121 (coder, 192.168.10.44)
+# V 1.1 Linux native Stack (coder CT 121) ergänzt — 2026-05-11
+# V 1.0 Initial — Erstellt: 2026-05-09
 # Zweck: Pro Zielplattform alle benötigten Tools zum Kompilieren und Erstellen von Programmen
 
 # ============================================================
@@ -124,6 +125,42 @@ linux_x64:
     distros_installiert: keine
     install: wsl --install Ubuntu
     status: installiert_ohne_distro
+
+# ============================================================
+# PLATTFORM 2b: LINUX x86_64 NATIVE (coder CT 121)
+# ============================================================
+linux_x64_native:
+  prozessor: x86_64
+  betriebssystem: Debian / Linux Container CT 121
+  hostname: coder
+  ip: 192.168.10.44
+  user: m.mader
+
+  stack_rust:
+    name: Rust (Linux nativ)
+    compiler: /home/m.mader/.cargo/bin/rustc
+    version: "1.95.0"
+    build_system: /home/m.mader/.cargo/bin/cargo
+    cargo_version: "1.95.0"
+    linker: cc (gcc 12.2.0) aus build-essential
+    target: x86_64-unknown-linux-gnu
+    sprachen: Rust
+    status: installiert
+    aktivierung: '. "$HOME/.cargo/env"  # dauerhaft in ~/.bashrc eingetragen'
+
+  stack_gcc:
+    name: GCC (Linux nativ)
+    compiler: /usr/bin/gcc
+    version: "12.2.0"
+    cpp: /usr/bin/g++
+    build_system: make / cmake (falls installiert)
+    status: installiert (build-essential)
+
+  build_dependencies:
+    - build-essential (gcc 12.2.0, g++, make)
+    - pkg-config
+    - libssl-dev
+    - libsqlite3-dev
 
 # ============================================================
 # PLATTFORM 3: LINUX ARM64 / aarch64 (Cross von Windows)
@@ -416,6 +453,7 @@ status_übersicht:
     - esp32_xtensa (ESP-IDF 5.4 + Arduino)
     - esp32_riscv (ESP-IDF 5.4)
     - avr (Arduino IDE + avr-gcc)
+    - linux_x64_native (Rust 1.95.0 + GCC 12.2.0 auf coder CT 121)
 
   teilweise_installiert:
     - linux_x64 (Rust+Zig cross ok, Clang braucht Sysroot)
@@ -426,3 +464,5 @@ status_übersicht:
   nicht_installiert:
     - arm_cortex_m standalone (arm-none-eabi-gcc, probe-rs)
     - wsl_distro (wsl.exe vorhanden, kein Ubuntu/Debian)
+
+# EOF
