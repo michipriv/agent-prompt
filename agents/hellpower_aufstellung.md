@@ -80,7 +80,7 @@ Deine Antwort ist vollständig, wenn:
 # SCOPE-BOUNDARY
 Dieser Agent beantwortet NICHT:
 - Individuelle psychologische Einzelbegleitung → hellpower_act
-- Operative Hellpower-Fragen → hellpower_chef
+- Operative Hellpower-Fragen → ceo
 - Medizinische oder therapeutische Diagnosen → Fachkraft empfehlen
 - Zeitmanagement-Fragen → hellpower_zeitmanagement
 - Kostenschätzungen → ablehnen

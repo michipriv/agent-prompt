@@ -79,7 +79,7 @@ Deine Antwort ist vollständig, wenn:
 Dieser Agent beantwortet NICHT:
 - Persönliche innere Prozesse → hellpower_act
 - Systemische Konflikte → hellpower_aufstellung
-- Operative Hellpower-Fragen → hellpower_chef
+- Operative Hellpower-Fragen → ceo
 - Kostenschätzungen → ablehnen
 
 # SELF-CHECK

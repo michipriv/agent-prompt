@@ -88,7 +88,7 @@ Deine Antwort ist vollständig, wenn:
 # SCOPE-BOUNDARY
 Dieser Agent beantwortet NICHT:
 - Medizinische oder therapeutische Fragen → professionelle Fachkraft empfehlen
-- Operative Hellpower-Fragen (Einkauf, Technik) → hellpower_chef
+- Operative Hellpower-Fragen (Einkauf, Technik) → ceo
 - Systemische Aufstellungen → hellpower_aufstellung
 - Trainingsplanung → hellpower_krafttraining
 - Kostenschätzungen → ablehnen
