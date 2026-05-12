@@ -1,32 +1,56 @@
-# deploy.yaml — Deployment-Konfiguration agent-prompt
-# Aufruf: /deploy
-# Voraussetzung: OpenVPN aktiv (Zugang zu 192.168.10.x)
+# deploy.yaml — Sync-Konfiguration agent-prompt
+#
+# Zweck:
+#   Synchronisiert die globale Claude-Konfiguration (~/.claude/) in dieses Repo.
+#   Quelle: ~/.claude/agents/, ~/.claude/rules/, ~/.claude/CLAUDE.md
+#   Ziel:   <repo-root>/agents/, <repo-root>/rules/, <repo-root>/CLAUDE.md
+#
+# Konfiguration:
+#   Alle Pfade und Einstellungen werden aus config.toml im Repo-Root gelesen.
+#
+# Aufruf (im Repo-Root ausführen):
+#
+#   Linux:
+#     ./bin/sync-claude sync
+#
+#   Windows:
+#     .\bin\sync-claude.exe sync
+#
+# Nach erfolgreichem Sync:
+#   Geänderte Dateien committen und pushen via mcp-git (Bash-Git ist verboten).
+#   Beispiel-Workflow:
+#     1. git_status prüfen
+#     2. git_add  → geänderte Dateien stagen
+#     3. git_commit → sachliche Commit-Message auf Deutsch
+#     4. git_push → zum Remote (Profil: m.mader, Remote: origin)
 
-source:
-  repo_path: "C:\\data\\agent-prompt"
-  git_profile: michipriv
-  git_remote: origin
+sync:
+  tool: sync-claude
+  mode: sync
+  config: config.toml
+
+  source:
+    base: "~/.claude"
+    paths:
+      - agents/
+      - rules/
+      - CLAUDE.md
+
+  target:
+    base: "<repo-root>"
+    paths:
+      - agents/
+      - rules/
+      - CLAUDE.md
+
+  binaries:
+    linux:   "./bin/sync-claude"
+    windows: ".\\bin\\sync-claude.exe"
+
+post_sync:
+  action: commit_and_push
+  tool: mcp-git
+  profile: m.mader
+  remote: origin
   branch: master
-
-target:
-  host: 192.168.10.23
-  protocol: winrm          # WinRM muss auf Remote aktiv sein (Enable-PSRemoting)
-  vpn: openvpn             # Erreichbar nur über OpenVPN
-  user: ""                 # TODO: Windows-Username auf Remote-PC eintragen
-  repo_path: "C:\\data\\agent-prompt"  # TODO: Zielpfad auf Remote-PC prüfen
-  git_profile: michipriv
-
-steps:
-  - name: push
-    action: git_push
-    repo_path: "{{ source.repo_path }}"
-    profile: "{{ source.git_profile }}"
-
-  - name: remote_pull
-    action: winrm_invoke
-    host: "{{ target.host }}"
-    user: "{{ target.user }}"
-    commands:
-      - 'if (!(Test-Path "{{ target.repo_path }}")) { & "C:\\Users\\{{ target.user }}\\.cargo\\bin\\cargo.exe" 2>$null; git clone https://github.com/michipriv/agent-prompt.git "{{ target.repo_path }}" }'
-      - 'cd "{{ target.repo_path }}" && git pull origin master'
-      - '"{{ target.repo_path }}\\target\\release\\sync-claude.exe" install'
+  note: "Bash-Git ist verboten — ausschließlich mcp-git MCP-Tools verwenden"
