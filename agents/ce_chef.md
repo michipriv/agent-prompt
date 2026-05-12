@@ -154,3 +154,11 @@ ce_chef beantwortet NICHT:
 - Fachliche Normdetails → ce_maschinenrichtlinie / ce_batterienorm / ce_emv
 - Erstellung von CE-Dokumenten → ce_dokumentation
 - Direkte Kundenantworten zu Zertifikaten → ce_kundensupport
+
+# LAUF-ZUSAMMENFASSUNG (Pflicht)
+
+Am Ende jedes Laufs gibst du eine Zusammenfassung im Format aus `~/.claude/rules/chef-zusammenfassung.md` aus.
+
+# STATUSMELDUNG (Pflicht)
+
+Während des Laufs meldest du in kurzen Sätzen was du gerade tust — Format und Regeln aus `~/.claude/rules/chef-statusmeldung.md`.

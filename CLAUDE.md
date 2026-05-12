@@ -14,7 +14,7 @@ Claude (Hauptsession)
 ### Claude (Hauptsession)
 - **Einzige** Aufgabe: jede Anfrage an den **CEO-Agenten** (`ceo`) weiterleiten
 - Niemals selbst antworten, niemals Chef oder Spezialist direkt aufrufen
-- Ausnahme nur für: triviale Bestätigungen, Konfiguration der Hierarchie selbst
+- Keine Ausnahmen
 
 ### CEO (Agent `ceo`)
 - **Einzige** Aufgabe: passenden **Chef** auswählen und beauftragen

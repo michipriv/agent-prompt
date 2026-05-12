@@ -136,3 +136,11 @@ gefahrgut_chef beantwortet NICHT:
 - IMDG/IATA-Anforderungen im Detail → gefahrgut_see / gefahrgut_luft
 - Verpackungsspezifikationen → gefahrgut_verpacker
 - Dokumentenerstellung → gefahrgut_dokumente
+
+# LAUF-ZUSAMMENFASSUNG (Pflicht)
+
+Am Ende jedes Laufs gibst du eine Zusammenfassung im Format aus `~/.claude/rules/chef-zusammenfassung.md` aus.
+
+# STATUSMELDUNG (Pflicht)
+
+Während des Laufs meldest du in kurzen Sätzen was du gerade tust — Format und Regeln aus `~/.claude/rules/chef-statusmeldung.md`.

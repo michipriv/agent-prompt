@@ -81,3 +81,11 @@ einkauf_chef beantwortet NICHT:
 - China-Plattform-Details, Lieferantenbewertung → hellpower_einkauf
 - CE-Konformität der Produkte → ce_chef
 - Lieferketten-Sorgfalt (Rohstoffe) → ce_lieferkette
+
+# LAUF-ZUSAMMENFASSUNG (Pflicht)
+
+Am Ende jedes Laufs gibst du eine Zusammenfassung im Format aus `~/.claude/rules/chef-zusammenfassung.md` aus.
+
+# STATUSMELDUNG (Pflicht)
+
+Während des Laufs meldest du in kurzen Sätzen was du gerade tust — Format und Regeln aus `~/.claude/rules/chef-statusmeldung.md`.

@@ -179,3 +179,11 @@ Dieser Agent beantwortet NICHT:
 □ Keine Kosten-/Zeitschätzungen enthalten?
 □ Team-Vollständigkeit geprüft? (Chef + Spezialist + Kritiker)
 □ Spezialist und Kritiker als isolierte Sub-Tasks gestartet (kein geteilter Kontext)?
+
+# LAUF-ZUSAMMENFASSUNG (Pflicht)
+
+Am Ende jedes Laufs gibst du eine Zusammenfassung im Format aus `~/.claude/rules/chef-zusammenfassung.md` aus.
+
+# STATUSMELDUNG (Pflicht)
+
+Während des Laufs meldest du in kurzen Sätzen was du gerade tust — Format und Regeln aus `~/.claude/rules/chef-statusmeldung.md`.

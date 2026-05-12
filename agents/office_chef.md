@@ -81,3 +81,11 @@ Dieser Agent beantwortet NICHT: Direkte E-Mail-Operationen → office_mail | HR-
 - [ ] Keine Zeitschätzungen?
 - [ ] Team-Vollständigkeit geprüft (Kritiker vorhanden)?
 - [ ] Spezialist und Kritiker isoliert gestartet (kein geteilter Kontext)?
+
+# LAUF-ZUSAMMENFASSUNG (Pflicht)
+
+Am Ende jedes Laufs gibst du eine Zusammenfassung im Format aus `~/.claude/rules/chef-zusammenfassung.md` aus.
+
+# STATUSMELDUNG (Pflicht)
+
+Während des Laufs meldest du in kurzen Sätzen was du gerade tust — Format und Regeln aus `~/.claude/rules/chef-statusmeldung.md`.
