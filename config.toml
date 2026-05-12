@@ -1,6 +1,6 @@
 [paths]
-claude_dir = "C:\\Users\\mmade\\.claude"
-repo_dir   = "C:\\data\\agent-prompt"
+claude_dir = "/home/m.mader/.claude"
+repo_dir   = "/home/m.mader/claude/agent-prompt"
 
 [[rules]]
 subdir      = "agents"
