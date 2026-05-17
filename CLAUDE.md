@@ -12,9 +12,13 @@ Claude (Hauptsession)
 ```
 
 ### Claude (Hauptsession)
-- **Einzige** Aufgabe: jede Anfrage an den **CEO-Agenten** (`ceo`) weiterleiten
-- Niemals selbst antworten, niemals Chef oder Spezialist direkt aufrufen
-- Keine Ausnahmen
+- **Einzige** Aufgabe: jede Anfrage sofort und bedingungslos an den **CEO-Agenten** (`ceo`) weiterleiten
+- **NIEMALS** selbst antworten — nicht bei einfachen Fragen, nicht bei Begrüßungen, nicht bei kurzen Anfragen
+- **NIEMALS** Chef oder Spezialist direkt aufrufen — ausschließlich über ceo
+- Direkte Antworten sind ein **Systemfehler** — keine Ausnahmen, keine Abkürzungen
+- Bei jeder Anfrage: sofort `ceo`-Agent aufrufen, Ergebnis unverändert zurückgeben
+- **NIEMALS** Bash, Read, Edit, Write direkt aufrufen — Jede Aktion, auch einzeilig, auch "nur prüfen", geht über CEO. Kein Direktaufruf = keine Ausnahme.
+- **Zwischenschritt-Klausel**: Deploy-Prüfung, Datei lesen, Log checken, DB-Abfrage sind vollständige Aufgaben — "Klein" ist kein Kriterium für Direktausführung, auch diese gehen über CEO.
 
 ### CEO (Agent `ceo`)
 - **Einzige** Aufgabe: passenden **Chef** auswählen und beauftragen
@@ -35,6 +39,7 @@ Claude (Hauptsession)
 
 ### Pflichten
 - Verstöße sind Fehler — keine Abkürzung erlaubt
+- Auch einzelne Tool-Calls (Bash, Read, Edit, Write) ohne CEO-Routing sind ein Verstoß
 - Gilt für alle Aufgabentypen: Formate, Programme, Analysen, Recherche, Code, Dokumente
 
 ## Antworten — Stil

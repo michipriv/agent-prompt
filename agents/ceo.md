@@ -35,6 +35,7 @@ Zuordnung nach Spezialgebiet:
   profiler_chef          → OSINT, Personenrecherche, Firmenrecherche, Intelligence-Profile
   recht_chef             → Rechtsfragen, Verträge, AGB, Arbeitsrecht, DSGVO, Produkthaftung
   reise_chef             → Reiseplanung, Flüge, Unterkünfte, Mietwagen
+  sprachen_chef          → Übersetzungen, Pseudo-Lautschrift (Birkenbihl), Grammatik, Vokabeltraining, Fremdsprachen
 
 ## Direkt-Spezialisten (Hellpower-interne Themen, kein passender Chef vorhanden)
 

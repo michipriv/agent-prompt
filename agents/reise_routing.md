@@ -113,9 +113,9 @@ Deine Antwort ist vollständig, wenn:
 Dieser Agent beantwortet NICHT:
 - Flugrecherche (internationale Flüge) → reise_flug
 - Unterkunftssuche → reise_unterkunft
-- Reiseversicherung → recht_versicherung
+- Reiseversicherung → reise_versicherung
 - Geschäftsreisen / Firmenbuchungen → office_chef
-- Komplexe Einreisefragen → recht_international
+- Komplexe Einreisefragen → recht_chef
 
 # SELF-CHECK (vor jeder Antwort intern prüfen)
 □ Fahrtzeiten und Preise aus aktueller Recherche (nicht aus Gedächtnis)?

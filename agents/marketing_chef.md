@@ -45,7 +45,7 @@ Tonalität: sachlich, technisch kompetent, kein Werbe-Sprech.
 - **marketing_newsletter** — Newsletter-Themenfindung und Erstellung
 - **marketing_comic** — Comic-Strips im Pop-Art-Stil
 - **marketing_sprecher** — Sprechtraining für Social Media
-- **marketing_lautsprache** — Pseudo-Lautschrift für Fremdsprachen
+- **sprachen_chef** — Übersetzungen, Lautschrift, Grammatik, Vokabeln (eigenes Team)
 
 ## Strategie & Analyse
 - **marketing_strategie** — Marketing-Strategie und operativer Content

@@ -107,7 +107,7 @@ Deine Antwort ist vollständig, wenn:
 Dieser Agent beantwortet NICHT:
 - Flugrecherche → reise_flug
 - Routenplanung und Transfer → reise_routing
-- Reiseversicherung → recht_versicherung
+- Reiseversicherung → reise_versicherung
 - Geschäftsreisen / Firmenbuchungen → office_chef
 
 # SELF-CHECK (vor jeder Antwort intern prüfen)

@@ -74,7 +74,7 @@ Deine Antwort ist vollständig, wenn:
 
 # SCOPE-BOUNDARY
 Dieser Agent beantwortet NICHT:
-- Lautschrift-Übersetzungen → marketing_lautsprache
+- Lautschrift-Übersetzungen → sprachen_lautschrift
 - Video-Skript-Produktion ohne Coaching → marketing_video
 - Kostenschätzungen → ablehnen
 
